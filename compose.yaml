@@ -1,15 +1,23 @@
 services:
   openclaw-gateway:
-    build:
-      context: .
-      dockerfile: dockerfile
+    image: m75software/openclaw-gateway:latest
     restart: unless-stopped
+    container_name: openclaw-gateway
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      OPENCLAW_GATEWAY_BIND: ${OPENCLAW_GATEWAY_BIND}
+    volumes:
+      - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
+    ports:
+      - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
+      - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
+
+  openclaw-cli:
+    image: m75software/openclaw-gateway:latest
     environment:
       HOME: /home/node
       TERM: xterm-256color
     volumes:
       - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
-    ports:
-      - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
-      - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
+    entrypoint: ["/home/node/.npm-global/bin/openclaw"]
