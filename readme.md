@@ -5,7 +5,7 @@ This is a simple docker image that allows you to run Openclaw in a container.
 Create and set an `.env` file with the following values:
 ```
 OPENCLAW_CONFIG_DIR=<Path to the local config directory>
-OPENCLAW_WORKSPACE_DIR=<Path to the local workspace directory>
+OPENAI_API_KEY=<OPTIONAL: OpenAI API Key>
 ```
 
 ### First Run
@@ -18,19 +18,20 @@ Make note of the token, you'll need this when accessing the Control UI.
 
 ### Start the stack
 Run the image with the following command:
-
 ```
 docker compose up -d
 ```
-
-Since this is running on the LAN (by default) you will need to authorize any browsers trying to access the Control UI. To do this run the following commands:
+Attach to the commandline for the new running container:
 ```
 docker exec -it openclaw-gateway bash
-openclaw devices list
-openclaw devices approve <device ID>
 ```
-
-### Attach to CLI for the Gateway
+Run doctor, status and security audits to makes sure things are in order:
 ```
-docker exec -it openclaw-gateway bash
+openclaw doctor --fix
+openclaw security audit
+openclaw status
+```
+Then, start a chat session in the terminal:
+```
+openclaw tui
 ```
